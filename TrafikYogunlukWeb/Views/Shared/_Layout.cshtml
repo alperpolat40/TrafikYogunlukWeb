@@ -1,0 +1,180 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - İstanbul Trafik Yoğunluğu</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TrafikYogunlukWeb.styles.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        nav.navbar {
+            font-weight: 600;
+        }
+
+        .nav-link:hover {
+            color: #ffc107 !important;
+            transition: 0.2s ease-in-out;
+        }
+
+        .navbar-brand i {
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @@keyframes pulse {
+            0%
+
+        {
+            transform: scale(1);
+        }
+
+        100% {
+            transform: scale(1.1);
+        }
+
+        }
+
+        .footer-custom {
+        background-color: #212529 !important;  /* Navbar ile aynı renk */
+        border-top: none;
+        padding-bottom: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    html, body {
+        background-color: #f0f2f5;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark shadow-sm px-3">
+            <div class="container-fluid">
+                <a class="navbar-brand text-white fw-bold" asp-area="" asp-controller="Home" asp-action="Anasayfa">
+                    <i class="fa-solid fa-car-side text-danger me-2"></i>İstanbul Trafik
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
+                    <ul class="navbar-nav flex-grow-1 justify-content-end fw-semibold">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Home" asp-action="Trafik">
+                                <i class="fa-solid fa-map-location-dot me-1 text-info"></i>Canlı Harita
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Home" asp-action="Grafik">
+                                <i class="fa-solid fa-chart-column me-1 text-success"></i>Grafikler
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Home" asp-action="Performans">
+                                <i class="fa-solid fa-sliders me-1 text-warning"></i>Model Karşılaştırması
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Home" asp-action="Harita">
+                                <i class="fa-solid fa-map me-1 text-primary"></i>Yıllık Yoğunluk Haritaları
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Home" asp-action="Isi">
+                                <i class="fa-solid fa-temperature-three-quarters me-1 text-danger"></i>Yıllık Isı Haritaları
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="flex-grow-1 py-4">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer class="footer-custom text-light mt-5 bg-dark">
+        <div class="container py-5">
+            <div class="row g-4">
+
+                <!-- Proje Linkleri -->
+                <div class="col-md-4">
+                    <h6 class="text-uppercase text-info mb-3">📁 Proje</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="/Home/Anasayfa" class="text-light text-decoration-none">➤ Ana Sayfa</a></li>
+                        <li><a href="/Home/Trafik" class="text-light text-decoration-none">➤ Canlı Harita</a></li>
+                        <li><a href="/Home/Grafik" class="text-light text-decoration-none">➤ Grafikler</a></li>
+                        <li><a href="/Home/Performans" class="text-light text-decoration-none">➤ Model Karşılaştırması</a></li>
+                        <li><a href="/Home/Isi" class="text-light text-decoration-none">➤ Yıllık Isı Haritaları</a></li>
+                    </ul>
+                </div>
+
+                <!-- Hakkımızda -->
+                <div class="col-md-4">
+                    <h6 class="text-uppercase text-info mb-3">👨‍💻 Hakkımızda</h6>
+                    <p class="small mb-2">
+                        Bu proje, 3 Bilgisayar Mühendisliği öğrencisi tarafından bitirme projesi olarak geliştirilmiştir.
+                    </p>
+                    <p class="small mb-1"><strong>🎯 Vizyonumuz:</strong> Trafik verilerini anlamlandırarak akıllı şehir altyapısına katkı sağlamak.</p>
+                    <p class="small"><strong>🧭 Misyonumuz:</strong> Gerçek zamanlı ve geçmişe dönük trafik verilerini kullanıcı dostu görsellerle sunmaktır.</p>
+                </div>
+
+                <!-- İletişim -->
+                <div class="col-md-4">
+                    <h6 class="text-uppercase text-info mb-3">📬 İletişim</h6>
+                    <p class="small mb-1">📧 alper.polat1@ogr.sakarya.edu.tr</p>
+                    <p class="small mb-1">📧 kerim.baskan@ogr.sakarya.edu.tr</p>
+                    <p class="small mb-1">📧 ekrem.akkaya@ogr.sakarya.edu.tr</p>
+                    <br>
+                    <p class="small mb-2">📍 Sakarya Üniversitesi</p>
+                    <div class="rounded overflow-hidden shadow-sm border border-secondary" style="height: 120px;">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12206.221637880278!2d30.32672730920388!3d40.74143342018602!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14ccb635c53e623f%3A0x3a2fcb1e61eb5df2!2sSakarya%20%C3%9Cniversitesi!5e0!3m2!1str!2str!4v1707137981856!5m2!1str!2str"
+                                width="100%"
+                                height="100%"
+                                style="border:0;"
+                                allowfullscreen=""
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+
+            </div>
+            <hr class="border-secondary mt-5">
+            
+             
+        </div>
+    </footer>
+
+
+
+    <div style="height: 60px; background-color: #212529;"></div>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

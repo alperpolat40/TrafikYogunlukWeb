@@ -1,0 +1,210 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<style>
+    body {
+        background-color: #f0f2f5;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+
+    .team-card {
+        background: white;
+        border-radius: 16px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        padding: 30px 15px;
+        opacity: 0;
+        animation: fadeInUp 1s ease forwards;
+    }
+
+        .team-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .team-card img {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #3498db;
+            transition: border-color 0.3s;
+        }
+
+        .team-card:hover img {
+            border-color: #1abc9c;
+        }
+
+        .team-card h5 {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .team-card p {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+    .section-title {
+        color: #2c3e50;
+    }
+
+    .icon-road {
+        color: #e74c3c;
+    }
+
+    @@media (max-width: 768px) {
+        h1 .display-5
+
+    {
+        font-size: 1.8rem;
+    }
+
+    .team-card img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .team-card h5 {
+        font-size: 16px;
+    }
+
+    .team-card p {
+        font-size: 14px;
+    }
+
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .bg-white.shadow-sm {
+        padding: 1.2rem !important;
+    }
+
+    .list-unstyled li {
+        font-size: 14px;
+    }
+
+    }
+
+    /* Animasyon tanımı */
+    @@keyframes fadeInUp {
+        0%
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .fade-in-up {
+        opacity: 0;
+        animation: fadeInUp 1s ease forwards;
+    }
+
+    .delay-1 {
+        animation-delay: 0.3s;
+    }
+
+    .delay-2 {
+        animation-delay: 0.6s;
+    }
+
+    .delay-3 {
+        animation-delay: 0.9s;
+    }
+
+    .delay-4 {
+        animation-delay: 1.2s;
+    }
+
+    .delay-5 {
+        animation-delay: 1.5s;
+    }
+
+</style>
+
+<div class="container py-5">
+    <div class="text-center mb-5 fade-in-up delay-1">
+        <h1 class="text-center mt-4 fw-bold" style="font-size: 2.5rem;">
+            <i class="fa-solid fa-traffic-light text-warning me-2"></i>İstanbul Trafik Analizi
+        </h1>
+    </div>
+
+    <div class="row justify-content-center text-center mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="team-card delay-2">
+                <img src="~/images/alper.png" alt="Alper Polat">
+                <h5>G191210039</h5>
+                <p>ALPER POLAT</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="team-card delay-3">
+                <img src="~/images/kerim.png" alt="Kerim Başkan">
+                <h5>G221210387</h5>
+                <p>KERİM BAŞKAN</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="team-card delay-4">
+                <img src="~/images/ekrem.png" alt="Ekrem Burak Akkaya">
+                <h5>G201210067</h5>
+                <p>EKREM BURAK AKKAYA</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container pb-5">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="bg-white shadow-sm rounded p-4 h-100 fade-in-up delay-4">
+                    <h4 class="fw-bold text-primary mb-3">
+                        <i class="fa-solid fa-bullseye me-2 text-danger"></i>Projenin Amacı
+                    </h4>
+                    <p class="text-muted">
+                          Bu proje, İstanbul’daki trafik yoğunluğunun yıllık,mevsimlik ve iş gidiş-geliş saatleri bazında analiz edilmesini,
+                        yoğunlukların harita üzerinde görsel olarak sunulmasını ve farklı makine öğrenmesi modelleri ile
+                        trafik tahminlerinin karşılaştırılmasını hedeflemektedir.
+                    </p>
+                    <p class="text-muted">
+                          Çalışmada, canlı trafik verileri ve geçmiş yıllara ait yoğunluk bilgileri kullanılarak ısı haritaları oluşturulmuş;
+                        Decision Tree, Random Forest, Polynomial Regression ve LightGBM gibi algoritmalar ile tahminleme modelleri geliştirilmiştir.
+                    </p>
+                    <p class="text-muted">
+                          Bu modellerin doğruluğu, <strong>R² (Determinasyon Katsayısı)</strong>,
+                        <strong>MAE (Ortalama Mutlak Hata)</strong> ve <strong>MSE (Ortalama Kare Hata)</strong> gibi
+                        performans metrikleri kullanılarak değerlendirilmiştir.
+                    </p>
+                    
+
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="bg-white shadow-sm rounded p-4 h-100 fade-in-up delay-5">
+                    <h4 class="fw-bold text-primary mb-3">
+                        <i class="fa-solid fa-toolbox me-2 text-success"></i>Kullanılan Teknolojiler
+                    </h4>
+                    <ul class="list-unstyled text-muted">
+                        <li><i class="fa-brands fa-python me-2 text-warning"></i>Python (veri analizi & ML)</li>
+                        <li><i class="fa-brands fa-js me-2 text-warning"></i>JavaScript / Leaflet.js (harita)</li>
+                        <li><i class="fa-brands fa-bootstrap me-2 text-purple"></i>Bootstrap 5 (arayüz tasarımı)</li>
+                        <li><i class="fa-brands fa-microsoft me-2 text-secondary"></i>ASP.NET Core MVC</li>
+                        <li><i class="fa-solid fa-database me-2 text-info"></i>CSV & JSON Veri Formatları</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

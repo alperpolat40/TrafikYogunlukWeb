@@ -1,0 +1,216 @@
+﻿@using Newtonsoft.Json.Linq
+@using System.Globalization
+@{
+    ViewData["Title"] = "Canlı Trafik Haritası";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var trafficPoints = ViewBag.TrafficPoints as List<JObject> ?? new();
+    var lineList = new List<string>();
+
+    int akici = 0, yogun = 0, tikali = 0;
+    double totalSpeed = 0;
+    int segmentCount = 0;
+
+    foreach (var data in trafficPoints)
+    {
+        var segment = data?["flowSegmentData"];
+        var coords = segment?["coordinates"]?["coordinate"] as JArray;
+        var speed = segment?["currentSpeed"];
+
+        if (coords != null && speed != null && coords.Count > 1)
+        {
+            var latlngs = new List<string>();
+            foreach (var point in coords)
+            {
+                var lat = point?["latitude"];
+                var lon = point?["longitude"];
+                if (lat != null && lon != null)
+                {
+                    string latStr = ((double)lat).ToString(CultureInfo.InvariantCulture);
+                    string lonStr = ((double)lon).ToString(CultureInfo.InvariantCulture);
+                    latlngs.Add($"[{latStr}, {lonStr}]");
+                }
+            }
+
+            if (latlngs.Count > 1)
+            {
+                double hiz = (double)speed;
+                string color = hiz < 15 ? "red" : hiz < 30 ? "orange" : "green";
+
+                if (hiz < 15) tikali++;
+                else if (hiz < 30) yogun++;
+                else akici++;
+
+                totalSpeed += hiz;
+                segmentCount++;
+
+                string polylineJson = "[" + string.Join(",", latlngs) + "]";
+                lineList.Add($"{{ coords: {polylineJson}, speed: {hiz}, color: '{color}' }}");
+            }
+        }
+    }
+
+    var finalJson = "[" + string.Join(",", lineList) + "]";
+    var toplam = akici + yogun + tikali;
+    var oranAkici = toplam > 0 ? (int)Math.Round((double)akici / toplam * 100) : 0;
+    var oranYogun = toplam > 0 ? (int)Math.Round((double)yogun / toplam * 100) : 0;
+    var oranTikali = toplam > 0 ? (int)Math.Round((double)tikali / toplam * 100) : 0;
+    var genelYogunluk = oranYogun + oranTikali;
+}
+
+<style>
+    .main-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 30px;
+        padding: 30px;
+        flex-wrap: wrap;
+    }
+
+    .left-panel {
+        flex: 2;
+        min-width: 350px;
+    }
+
+    .right-panel {
+        flex: 1;
+        min-width: 320px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    #harita {
+        height: 600px;
+        border-radius: 16px;
+        border: 2px solid #ccc;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .chart-container, .legend-box {
+        background-color: #fff;
+        padding: 20px;
+        width: 100%;
+        max-width: 360px;
+        border-radius: 16px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    }
+
+        .chart-container h4 {
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .legend-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .legend-box li {
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .legend-box span {
+            font-weight: bold;
+            margin-right: 6px;
+        }
+
+    .genel-yogunluk {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="main-container">
+    <div class="left-panel">
+        <div id="harita"></div>
+    </div>
+    <div class="right-panel">
+        <div class="chart-container">
+            <h4>Trafik Yoğunluğu Yüzdesel Dağılım</h4>
+            <canvas id="yoğunlukChart" width="300" height="300"></canvas>
+            <div class="genel-yogunluk">
+                Genel Trafik Yoğunluğu: %@genelYogunluk
+            </div>
+        </div>
+        <div class="legend-box">
+            <h4>Trafik Yoğunluğu Renkleri:</h4>
+            <ul>
+                <li><span style="color:green">🟢 Akıcı</span>: Ortalama hız > 30 km/h</li>
+                <li><span style="color:orange">🟠 Yoğun</span>: Ortalama hız 15–30 km/h</li>
+                <li><span style="color:red">🔴 Tıkalı</span>: Ortalama hız < 15 km/h</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    var map = L.map('harita').setView([41.1, 29.0], 10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>'
+    }).addTo(map);
+
+    var trafficLines = @Html.Raw(finalJson);
+
+    trafficLines.forEach(line => {
+        const durum = line.speed < 15 ? "🛑 Tıkalı" :
+                      line.speed < 30 ? "⚠️ Yoğun" : "✅ Akıcı";
+        L.polyline(line.coords, {
+            color: line.color,
+            weight: 6,
+            opacity: 0.85
+        }).addTo(map).bindPopup(`${durum}<br>Ortalama hız: ${line.speed} km/h`);
+    });
+
+    var heatData = trafficLines.map(line => [...line.coords[0], line.speed]);
+    L.heatLayer(heatData, {
+        radius: 30,
+        blur: 18,
+        maxZoom: 17,
+        gradient: {
+            0.1: "blue",
+            0.3: "lime",
+            0.6: "orange",
+            1.0: "red"
+        }
+    }).addTo(map);
+
+    const chartData = {
+        labels: ['Akıcı %@oranAkici', 'Yoğun %@oranYogun', 'Tıkalı %@oranTikali'],
+        datasets: [{
+            data: [@oranAkici, @oranYogun, @oranTikali],
+            backgroundColor: ['#2ecc71', '#f39c12', '#e74c3c']
+        }]
+    };
+
+    new Chart(document.getElementById('yoğunlukChart'), {
+        type: 'doughnut',
+        data: chartData,
+        options: {
+            cutout: '65%',
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { font: { size: 14 } }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ctx.label
+                    }
+                }
+            }
+        }
+    });
+</script>

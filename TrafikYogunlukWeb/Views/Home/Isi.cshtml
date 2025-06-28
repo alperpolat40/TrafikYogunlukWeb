@@ -1,0 +1,128 @@
+﻿@{
+    ViewData["Title"] = "Yıllık Isı Haritaları";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background-color: #f0f2f5;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .year-tabs {
+        text-align: center;
+        margin: 40px auto 20px;
+    }
+
+        .year-tabs button {
+            background: #fff;
+            border: 2px solid #c2410c;
+            color: #c2410c;
+            padding: 10px 20px;
+            margin: 0 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .year-tabs button.active,
+            .year-tabs button:hover {
+                background-color: #c2410c;
+                color: white;
+            }
+
+    .map-container {
+        max-width: 1100px;
+        margin: 0 auto 60px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+        padding: 25px;
+        transition: transform 0.3s ease;
+    }
+
+        .map-container h2 {
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 520px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+    .map-content {
+        display: none;
+    }
+
+        .map-content.active {
+            display: block;
+        }
+
+    @@media (max-width: 768px) {
+        .year-tabs button {
+            margin: 5px 5px;
+            padding: 8px 14px;
+            font-size: 14px;
+        }
+
+        .map-container iframe {
+            height: 400px;
+        }
+
+        .map-container h2 {
+            font-size: 20px;
+        }
+    }
+</style>
+
+<div class="year-tabs">
+    <button onclick="showMap('2020', this)" class="active">2020</button>
+    <button onclick="showMap('2021', this)">2021</button>
+    <button onclick="showMap('2022', this)">2022</button>
+    <button onclick="showMap('2023', this)">2023</button>
+    <button onclick="showMap('2024', this)">2024</button>
+</div>
+
+<div class="map-container">
+    <div id="map-2020" class="map-content active">
+        <h2>🔥 2020 - İstanbul Isı Haritası</h2>
+        <iframe src="/haritalar/trafik_ısı_2020.html" allowfullscreen></iframe>
+    </div>
+
+    <div id="map-2021" class="map-content">
+        <h2>🔥 2021 - İstanbul Isı Haritası</h2>
+        <iframe src="/haritalar/trafik_ısı_2021.html" allowfullscreen></iframe>
+    </div>
+
+    <div id="map-2022" class="map-content">
+        <h2>🔥 2022 - İstanbul Isı Haritası</h2>
+        <iframe src="/haritalar/trafik_ısı_2022.html" allowfullscreen></iframe>
+    </div>
+
+    <div id="map-2023" class="map-content">
+        <h2>🔥 2023 - İstanbul Isı Haritası</h2>
+        <iframe src="/haritalar/trafik_ısı_2023.html" allowfullscreen></iframe>
+    </div>
+
+    <div id="map-2024" class="map-content">
+        <h2>🔥 2024 - İstanbul Isı Haritası</h2>
+        <iframe src="/haritalar/trafik_ısı_2024.html" allowfullscreen></iframe>
+    </div>
+</div>
+
+<script>
+    function showMap(year, button) {
+        document.querySelectorAll('.map-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.year-tabs button').forEach(btn => btn.classList.remove('active'));
+
+        document.getElementById('map-' + year).classList.add('active');
+        button.classList.add('active');
+    }
+</script>

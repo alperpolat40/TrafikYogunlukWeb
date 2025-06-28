@@ -1,0 +1,233 @@
+﻿@model List<TrafikYogunlukWeb.Models.Model>
+@{
+    ViewData["Title"] = "Makine Öğrenmesi Modelleri";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string GetModelExplanation(string modelName)
+    {
+        switch (modelName)
+        {
+            case "Decision Tree":
+                return "Karar ağaçları, kurallara dayalı yapısıyla karmaşık veri ilişkilerini başarılı bir şekilde öğrenebilir. Bu model en yüksek doğruluk (R²: 0,91) ve en düşük hata değerleriyle (MAE: 4,79, MSE: 53,42) en iyi performansı göstermiştir.";
+            case "LightGBM":
+                return "LightGBM, büyük veriyle hızlı çalışsa da karmaşık yapılarda hata oranı artabilir. R²: 0,75 ile makul doğruluk sağlar. MAE: 9,72 ve MSE: 156,24 değerleri orta seviyededir.";
+            case "XGBoost":
+                return "XGBoost yüksek performanslı ve dengeli sonuçlar sunar. R²: 0,83 ile güçlü doğruluk göstermiştir. MAE ve MSE değerleri de oldukça iyidir.";
+            case "K-Nearest Neighbors":
+                return "KNN algoritması sezgiseldir fakat büyük veri setlerinde yetersiz kalır. R²: 0,33 gibi düşük doğruluk oranı ve yüksek hata oranları ile beklentinin altında kalmıştır.";
+            case "Polynomial Regression":
+                return "Polynomial Regression, doğrusal olmayan ilişkileri modellemek için kullanılır. Ancak bu veri setinde yetersiz kalmıştır. R²: 0,007 ile en zayıf sonucu vermiştir.";
+            default:
+                return "Model hakkında bilgi bulunamadı.";
+        }
+    }
+}
+
+<style>
+    /* Genel Sayfa Konteyneri */
+    .model-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        
+    }
+
+    h2, h3 {
+        text-align: center;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    /* Başlık */
+    h2 {
+        font-size: 36px;
+        margin-bottom: 30px;
+        color: #1e3a8a;
+    }
+
+    h3 {
+        font-size: 28px;
+        color: #3498db;
+        margin-top: 40px;
+        margin-bottom: 20px;
+    }
+
+    /* Model Kartları */
+    .model-card {
+        background-color: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        margin-bottom: 40px;
+        display: flex;
+        flex-direction: column;
+       
+    }
+
+        /* Model Başlığı */
+        .model-card h4 {
+            font-size: 28px;
+            color: #2980b9;
+            font-weight: bold;
+            background-color: #ecf9ff;
+            padding: 12px 20px;
+            border-left: 6px solid #3498db;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        /* Model Açıklamaları */
+        .model-card p {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.6;
+            margin: 10px 0;
+            text-align: justify;
+        }
+
+        .model-card .metrics {
+            font-weight: 600;
+            color: #2980b9;
+        }
+
+        /* Görsel Bölümü */
+        .model-card .img-wrapper {
+            text-align: center;
+            position: relative;
+        }
+
+        .model-card img {
+            max-width: 100%;
+            width: 600px;
+            display: block;
+            margin: 20px auto;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .model-card img:hover {
+                transform: scale(1.05);
+                box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+            }
+
+        .model-card .img-caption {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.65);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+    /* Performans Tablosu */
+    .table {
+        width: 100%;
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+        .table thead {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .table th, .table td {
+            text-align: center;
+            padding: 15px;
+            font-size: 16px;
+        }
+
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    /* Mobil Uyum */
+    @@media (max-width: 768px) {
+        h2
+
+    {
+        font-size: 28px;
+    }
+
+    h3 {
+        font-size: 24px;
+    }
+
+    .model-card {
+        padding: 20px;
+    }
+
+        .model-card h4 {
+            font-size: 22px;
+        }
+
+        .model-card p {
+            font-size: 14px;
+        }
+
+        .model-card .img-wrapper img {
+            width: 100%;
+        }
+
+        .model-card .metrics {
+            font-size: 14px;
+        }
+
+    }
+</style>
+
+<div class="model-container">
+    <h2>📊 Makine Öğrenmesi Model Performans Karşılaştırması</h2>
+
+    <!-- Performans Tablosu -->
+    <table class="table table-bordered table-hover mt-4">
+        <thead>
+            <tr>
+                <th>Model</th>
+                <th>R² (Doğruluk)</th>
+                <th>MAE</th>
+                <th>MSE</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var m in Model)
+            {
+                <tr>
+                    <td>@m.Ad</td>
+                    <td>@m.R2</td>
+                    <td>@m.MAE</td>
+                    <td>@m.MSE</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>📝 Modellerin Açıklamalı Değerlendirmesi</h3>
+
+    <!-- Modellerin Açıklamaları ve Resimleri -->
+    @foreach (var m in Model)
+    {
+        <div class="model-card">
+            <h4>@m.Ad</h4>
+            <p>
+                <span class="metrics">R²:</span> @m.R2 &nbsp;&nbsp;|&nbsp;&nbsp;
+                <span class="metrics">MAE:</span> @m.MAE &nbsp;&nbsp;|&nbsp;&nbsp;
+                <span class="metrics">MSE:</span> @m.MSE
+            </p>
+            <p>@GetModelExplanation(m.Ad)</p>
+
+            <div class="img-wrapper">
+                <img src="/performans/@m.ImgDosyaAdi" alt="@m.Ad Performans Grafiği" />
+                <div class="img-caption">@m.Ad</div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,321 @@
+﻿@{
+    ViewData["Title"] = "Trafik Analiz Grafikleri";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background-color: #f5f7fa;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .grafik-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .grafik-row {
+        display: flex;
+        flex-wrap: wrap;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        margin-bottom: 50px;
+        padding: 25px;
+        gap: 30px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .grafik-row img {
+            width: 100%;
+            max-width: 500px;
+            height: 320px;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+            .grafik-row img:hover {
+                transform: scale(1.02);
+            }
+
+    .grafik-text {
+        flex: 1 1 400px;
+        max-width: 600px;
+    }
+
+        .grafik-text h2 {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .grafik-text p {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.7;
+            white-space: pre-line;
+        }
+
+    .blue {
+        color: #007bff;
+    }
+
+    .orange {
+        color: #ff7f0e;
+    }
+
+    .green {
+        color: #2ca02c;
+    }
+
+    .red {
+        color: #d62728;
+    }
+
+    .purple {
+        color: #6f42c1;
+    }
+
+    @@media (max-width: 768px) {
+        .grafik-row
+
+    {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .grafik-row img {
+        width: 100%;
+        height: auto;
+        max-height: 300px;
+    }
+
+    .grafik-text {
+        max-width: 100%;
+        text-align: center;
+    }
+
+        .grafik-text h2 {
+            font-size: 20px;
+        }
+
+        .grafik-text p {
+            font-size: 15px;
+        }
+
+    }
+
+    .popup-img {
+        cursor: zoom-in;
+        transition: transform 0.3s ease;
+    }
+
+        .popup-img:hover {
+            transform: scale(1.02);
+        }
+
+    .lightbox-modal {
+        display: none;
+        position: fixed;
+        z-index: 1050;
+        padding-top: 60px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+        .lightbox-modal img {
+            display: block;
+            margin: auto;
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 12px;
+            box-shadow: 0 0 20px #000;
+        }
+
+        .lightbox-modal span.close {
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+    @@media (max-width: 768px) {
+        .lightbox-modal span.close
+
+    {
+        right: 20px;
+        font-size: 30px;
+    }
+    
+    }
+</style>
+
+
+
+<div class="grafik-container">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modal = document.getElementById("imgModal");
+            const modalImg = document.getElementById("modalImage");
+
+            document.querySelectorAll(".popup-img").forEach(img => {
+                img.addEventListener("click", function () {
+                    modal.style.display = "block";
+                    modalImg.src = this.src;
+                });
+            });
+
+            function closeModal() {
+                modal.style.display = "none";
+                modalImg.src = "";
+            }
+
+            // ESC ile kapatma
+            window.addEventListener("keydown", function (e) {
+                if (e.key === "Escape") closeModal();
+            });
+
+            // X butonu işlevi
+            window.closeModal = closeModal;
+        });
+    </script>
+
+
+    <div class="grafik-row">
+        <img src="/grafikler/model_performans.png" class="popup-img" />
+        <div class="grafik-text">
+            <h2 class="blue">📊 Model Performans Grafiği</h2>
+            <p>
+                <span class="blue">Nokta A (Mavi Çizgi):</span><br />
+                2020–2024 arası istikrarlı ama düşük yoğunlukta bir artış trendi var.
+                En düşük yoğunluk 2020'de, en yüksek ise 2024 yılında.
+                Ortalama araç sayısı 25–45 arasında kalmış → düşük yoğunluklu bir bölge olabilir.
+
+                <span class="orange">Nokta B (Turuncu Çizgi):</span><br />
+                2020’den 2022’ye kadar hafif artış → 2022’de zirve.
+                2023’te düşüş olsa da 2024’te sert bir artış yaşanmış.
+                2024’te ortalama araç sayısı 200’ü geçmiş → yoğun trafik bölgesi olabilir.
+            </p>
+        </div>
+    </div>
+
+    <div class="grafik-row">
+        <img src="/grafikler/genel_istanbul_5yil.png" class="popup-img" />
+        <div class="grafik-text">
+            <h2 class="purple">📈 Genel İstanbul Trafik Yoğunluğu</h2>
+            <p>
+                🔹 Gerçek Veriler (2020–2024):
+                - 2020 yılında trafik yoğunluğu yaklaşık %37 civarındadır.
+                - 2021 ve 2022 yıllarında kademeli bir artış görülmektedir (%39 → %45).
+                - 2023’te kısa bir düşüş yaşanmış ve yoğunluk tekrar %39 seviyesine gerilemiştir.
+                - 2024 yılında ise ciddi bir sıçrama ile trafik yoğunluğu %60’a ulaşmıştır.
+
+                🔸 Tahmini Veriler (2025–2029):
+                - Trafik yoğunluğunun her yıl düzenli olarak artacağı öngörülmektedir.
+                - 2025’te yaklaşık %58 olan tahmin, 2029 yılına kadar %75 seviyesine çıkmaktadır.
+                - Artışlar sabit ve istikrarlı bir seyir izlemektedir → her yıl ortalama %3-4 artış.
+            </p>
+        </div>
+    </div>
+
+    <div class="grafik-row">
+        <img src="/grafikler/ilce_arasi_ulasim.png" class="popup-img" />
+        <div class="grafik-text">
+            <h2 class="red">🚗 İlçeler Arası Ulaşım Süresi</h2>
+            <p>
+                Tüm güzergâhlarda 2020'den 2029'a kadar ulaşım süresi artış gösteriyor.
+                Esenyurt → Kadıköy hattı en uzun süreye sahip ve en hızlı artışı gösteriyor (yaklaşık 85 dakikaya çıkıyor).
+                Bakırköy → Başakşehir hattı en kısa ulaşım süresine sahip, ancak o hatta da yavaş bir artış mevcut.
+                Esenyurt → Sarıyer ve Beyoğlu → Sarıyer güzergâhları da yoğunlukla birlikte ciddi artış gösteriyor.
+                Özellikle dış ilçeler arası ulaşımda trafik etkisi giderek daha fazla hissediliyor.
+            </p>
+        </div>
+    </div>
+
+    <div class="grafik-row">
+        <img src="/grafikler/mevsimsel_yogunluk.png" class="popup-img" />
+        <div class="grafik-text">
+            <h2 class="green">🌤️ Mevsimsel Trafik Yoğunluğu</h2>
+            <p>
+                Kış ve ilkbahar aylarında trafik yoğunluğu diğer mevsimlere göre biraz daha yüksek.
+                Yaz ve sonbaharda ise araç sayısı hafif bir düşüş göstermiş.
+                Mevsimler arası fark çok büyük değil → yıl genelinde trafik yoğunluğu istikrarlı.
+            </p>
+        </div>
+    </div>
+
+    <div class="grafik-row">
+        <img src="/grafikler/tatil_yogunluk.png" class="popup-img" />
+        <div class="grafik-text">
+            <h2 class="orange">🎉 Resmi Tatil Trafik Yoğunluğu</h2>
+            <p>
+                En yoğun trafik, işe gidiş saatlerinde görülüyor (yaklaşık 90 araç).
+                Bunu işten çıkış ve gündüz saatleri takip ediyor.
+                Hafta sonu ve tatil günlerinde trafik belirgin şekilde daha düşük.
+                Hafta içi trafiği, genel olarak yüksek seviyede seyrediyor.
+            </p>
+        </div>
+    </div>
+
+    <div class="grafik-row">
+        <img src="/grafikler/tatil_yogunluk_detay.png" class="popup-img" />
+        <div class="grafik-text">
+            <h2 class="blue">🎉 Tatil Günlerine Göre Yoğunluk Detayları</h2>
+            <p>
+                Hafta İçi vs. Hafta Sonu:
+                Hafta içi trafik yoğunluğu belirgin şekilde daha yüksek.
+                Hafta sonu trafiği daha düşük → iş trafiği etkisi açıkça görülüyor.
+
+                Normal Gün vs. Resmi Tatil:
+                Normal günlerde trafik daha yoğun.
+                Resmi tatillerde araç sayısı belirgin şekilde düşüyor.
+
+                Saat Dilimlerine Göre:
+                Sabah (işe gidiş) ve akşam (işten çıkış) saatlerinde trafik çok yoğun.
+                Diğer saat dilimlerinde trafik yoğunluğu ciddi şekilde azalıyor.
+            </p>
+        </div>
+    </div>
+
+    <div class="grafik-row">
+        <img src="/grafikler/yillik_tahmin.png" class="popup-img" />
+        <div class="grafik-text">
+            <h2 class="purple">📅 Yıllara Göre Yoğunluk & 5 Yıllık Tahmin</h2>
+            <p>
+                Gerçek veriler (2020–2024):
+                Yoğunluk 2020–2023 arasında dalgalı bir seyir izliyor (yaklaşık %55–62 arası).
+                2024’te ise trafik yoğunluğu ani bir artışla %85’in üzerine çıkıyor.
+
+                Tahmini veriler (2025–2029):
+                Yoğunluğun her yıl düzenli artarak 2029'da %105 seviyesine ulaşacağı öngörülüyor.
+                Bu da mevcut altyapının gelecekte çok daha fazla baskı altında kalabileceğini gösteriyor.
+            </p>
+        </div>
+    </div>
+
+    <div class="grafik-row">
+        <div class="grafik-text">
+            <h2 class="red">📌 Genel Değerlendirme</h2>
+            <p>
+                İstanbul'da trafik yoğunluğu yıllar içinde artış göstermektedir. Özellikle işe gidiş/çıkış saatleri, hafta içi ve normal günlerde yoğunluk belirgin şekilde yükselmektedir. Tahmin modelleri de bu artış trendinin önümüzdeki yıllarda devam edeceğini göstermektedir. Ulaşım planlamasında mevsim, tatil ve saat faktörlerinin dikkate alınması, gelecekteki sıkışıklığın önüne geçmek adına kritik önemdedir.
+            </p>
+        </div>
+    </div>
+    <div id="imgModal" class="lightbox-modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img id="modalImage" src="" alt="Büyük Görsel">
+    </div>
+
+
+</div>
