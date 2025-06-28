@@ -1,13 +1,18 @@
-# 1. Build aşaması
+# Build aşaması
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+WORKDIR /src
+
+COPY TrafikYogunlukWeb.sln ./
+COPY TrafikYogunlukWeb/*.csproj ./TrafikYogunlukWeb/
+RUN dotnet restore TrafikYogunlukWeb.sln
 
 COPY . ./
-RUN dotnet publish -c Release -o out
+WORKDIR /src/TrafikYogunlukWeb
+RUN dotnet publish -c Release -o /app/publish
 
-# 2. Yayınlama aşaması
+# Runtime aşaması
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=build /app/out ./
+COPY --from=build /app/publish .
 
 ENTRYPOINT ["dotnet", "TrafikYogunlukWeb.dll"]
